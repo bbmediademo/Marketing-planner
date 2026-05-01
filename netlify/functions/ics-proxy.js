@@ -1,4 +1,4 @@
-export const handler = async (event) => {
+exports.handler = async (event) => {
   const { url } = event.queryStringParameters || {};
   if (!url) {
     return { statusCode: 400, body: 'Missing url parameter' };
@@ -16,6 +16,10 @@ export const handler = async (event) => {
       body: text,
     };
   } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
+    return {
+      statusCode: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: err.message }),
+    };
   }
 };
