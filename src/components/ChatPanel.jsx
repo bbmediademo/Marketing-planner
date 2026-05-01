@@ -47,7 +47,7 @@ export default function ChatPanel() {
   const sendToAPI = async (userMsg, systemPrompt) => {
     historyRef.current.push({ role: 'user', content: userMsg });
     const body = {
-      model: 'claude-sonnet-4-6',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 1024,
       system: systemPrompt,
       messages: historyRef.current,
@@ -60,8 +60,9 @@ export default function ChatPanel() {
     });
     const data = await res.json();
     if (!res.ok || data.error) {
-      const msg = typeof data.error === 'string' ? data.error : data.error?.message || JSON.stringify(data);
-      throw new Error(msg);
+      const err = data.error;
+      const msg = typeof err === 'string' ? err : err?.message || JSON.stringify(data);
+      throw new Error(`API fout (${res.status}): ${msg}`);
     }
     const raw = data.content?.[0]?.text || '';
     historyRef.current.push({ role: 'assistant', content: raw });

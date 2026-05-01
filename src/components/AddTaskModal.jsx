@@ -46,7 +46,7 @@ export default function AddTaskModal({ task, onClose }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
+          model: 'claude-haiku-4-5-20251001',
           max_tokens: 100,
           system: 'Je bent een productiviteitsexpert. Schat de tijdsduur van een marketingtaak in minuten (alleen veelvouden van 15, max 480). Antwoord alleen met een getal.',
           messages: [{ role: 'user', content: `Schat de tijdsduur in minuten voor deze marketingtaak: "${form.text}"` }],
