@@ -11,16 +11,28 @@ export default function SettingsModal({ onClose }) {
     if (!icsUrl.trim()) return;
     setSyncing(true);
     try {
-      const encoded = encodeURIComponent(icsUrl.trim());
+      // Convert webcal:// to https://
+      const cleanUrl = icsUrl.trim().replace(/^webcal:\/\//i, 'https://');
+      const encoded = encodeURIComponent(cleanUrl);
       const res = await fetch(`/api/ics-proxy?url=${encoded}`);
-      if (!res.ok) throw new Error('Kon ICS niet ophalen');
+      const contentType = res.headers.get('content-type') || '';
+
+      if (!res.ok) {
+        let errMsg = 'Kon ICS niet ophalen';
+        if (contentType.includes('application/json')) {
+          const json = await res.json();
+          errMsg = json.error || errMsg;
+        }
+        throw new Error(errMsg);
+      }
+
       const text = await res.text();
       const events = parseICS(text);
       setCalendarEvents(events);
-      updateSettings({ icsUrl: icsUrl.trim() });
+      updateSettings({ icsUrl: cleanUrl });
       showToast(`${events.length} agenda-items geladen`);
     } catch (e) {
-      alert('Fout bij laden agenda: ' + e.message);
+      alert('Fout: ' + e.message);
     }
     setSyncing(false);
   };
