@@ -47,7 +47,7 @@ export default function ChatPanel() {
   const sendToAPI = async (userMsg, systemPrompt) => {
     historyRef.current.push({ role: 'user', content: userMsg });
     const body = {
-      model: 'claude-haiku-4-5-20251001',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 1024,
       system: systemPrompt,
       messages: historyRef.current,
@@ -109,7 +109,7 @@ export default function ChatPanel() {
         addMsg('ai', raw);
       }
     } catch (e) {
-      addMsg('ai', `Fout: ${e.message}. Controleer of ANTHROPIC_API_KEY is ingesteld in Netlify.`);
+      addMsg('ai', `❌ ${e.message}`);
     }
     setLoading(false);
   };
